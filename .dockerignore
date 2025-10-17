@@ -13,8 +13,7 @@ node_modules/
 .env.*
 !.env.example
 
-# Configuration (doit être montée via volume, jamais dans l'image)
-config.json
+# Configuration (sera copiée dans l'image - à créer avant le build)
 
 # Documentation
 README.md

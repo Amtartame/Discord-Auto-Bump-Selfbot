@@ -1,267 +1,128 @@
-# 🐳 Documentation Docker - Discord Auto-Bump Selfbot
+# 🐳 Documentation Docker
 
-Ce guide détaille l'utilisation du selfbot avec Docker pour un déploiement isolé, sécurisé et facile.
+Guide pour déployer le selfbot avec Docker.
 
-## 📋 Prérequis
-
-- [Docker](https://docs.docker.com/get-docker/) installé sur votre système
-- [Docker Compose](https://docs.docker.com/compose/install/) (recommandé, souvent inclus avec Docker Desktop)
-- Fichiers `.env` et `config.json` configurés
-
-## 🚀 Démarrage rapide
-
-### Méthode 1 : Docker Compose (recommandé)
-
-La méthode la plus simple pour gérer le selfbot :
+## 🚀 Démarrage rapide (Local)
 
 ```bash
-# 1. Démarrer le selfbot en arrière-plan
+# Démarrer
 npm run docker:run
-# ou : docker-compose up -d
 
-# 2. Voir les logs en temps réel
+# Voir les logs
 npm run docker:logs
-# ou : docker-compose logs -f
 
-# 3. Arrêter le selfbot
+# Arrêter
 npm run docker:stop
-# ou : docker-compose down
 ```
 
-### Méthode 2 : Docker CLI
-
-Pour plus de contrôle manuel :
+## 📦 Build et Run manuel
 
 ```bash
-# 1. Construire l'image
-npm run docker:build
-# ou : docker build -t discord-bump-selfbot .
+# Build l'image
+docker build -t discord-bump-selfbot .
 
-# 2. Démarrer le container
+# Run le container
 docker run -d \
   --name discord-bump-selfbot \
   --env-file .env \
-  -v $(pwd)/config.json:/app/config.json:ro \
   --restart unless-stopped \
   discord-bump-selfbot
-
-# 3. Voir les logs
-docker logs -f discord-bump-selfbot
-
-# 4. Arrêter et supprimer le container
-docker stop discord-bump-selfbot
-docker rm discord-bump-selfbot
 ```
 
-## ⚙️ Configuration Docker
+**⚠️ Important :** Le fichier `config.json` est copié dans l'image lors du build. Créez-le AVANT de build.
 
-### docker-compose.yml
+## 🌐 Déploiement cloud
 
-Le fichier `docker-compose.yml` est configuré avec :
+### Dokploy (Recommandé pour self-hosting)
 
-```yaml
-services:
-  discord-bump-selfbot:
-    build: .
-    container_name: discord-bump-selfbot
-    restart: unless-stopped
-
-    # Variables d'environnement depuis .env
-    env_file:
-      - .env
-
-    # Mount du config.json en lecture seule
-    volumes:
-      - ./config.json:/app/config.json:ro
-
-    # Timezone (optionnel)
-    environment:
-      - TZ=Europe/Paris
-
-    # Rotation des logs
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-```
-
-### Dockerfile
-
-Image Node.js Alpine légère avec :
-- Node.js 18 LTS
-- User non-root pour la sécurité
-- Health check pour monitorer le process
-- Cache npm nettoyé pour optimiser la taille
-
-## 📊 Gestion et monitoring
-
-### Voir les logs
-
-```bash
-# Logs en temps réel
-docker-compose logs -f
-
-# Dernières 100 lignes
-docker-compose logs --tail=100
-
-# Logs d'un service spécifique
-docker logs discord-bump-selfbot
-```
-
-### Redémarrer le selfbot
-
-```bash
-# Avec docker-compose
-docker-compose restart
-
-# Avec Docker CLI
-docker restart discord-bump-selfbot
-```
-
-### Mettre à jour après modifications
-
-Si vous modifiez `index.js` ou les dépendances :
-
-```bash
-# Rebuild et redémarrage
-docker-compose up -d --build
-
-# Ou manuellement
-docker-compose down
-npm run docker:build
-docker-compose up -d
-```
-
-### Modifier la configuration sans rebuild
-
-Le fichier `config.json` est monté comme volume, donc vous pouvez :
-
-1. Modifier `config.json` localement
-2. Redémarrer le container :
-   ```bash
-   docker-compose restart
+1. **Poussez votre code sur GitHub**
+2. **Connectez le repo dans Dokploy**
+3. **Configurez les variables d'environnement** :
    ```
+   USER_TOKEN=votre_token_discord
+   ```
+4. **Créez `config.json` localement AVANT de push**
+5. **Push et déployez**
 
-Pas besoin de rebuild ! ✨
+**Note :** `config.json` sera copié dans l'image Docker lors du build sur Dokploy.
 
-## 🔧 Commandes NPM disponibles
+### Railway
 
-Pour simplifier l'utilisation, des scripts npm sont disponibles :
+```bash
+# Installer CLI
+npm i -g @railway/cli
+
+# Login
+railway login
+
+# Déployer
+railway up
+
+# Config env
+railway variables set USER_TOKEN=votre_token
+```
+
+**Note :** Assurez-vous que `config.json` est dans votre repo local avant de deploy.
+
+### Fly.io
+
+```bash
+# Déployer
+fly deploy
+
+# Config env
+fly secrets set USER_TOKEN=votre_token
+```
+
+**Note :** `config.json` doit exister avant le `fly deploy`.
+
+### Autres services
+
+- **Render** : Connectez GitHub, ajoutez env vars, déployez
+- **DigitalOcean** : App Platform avec GitHub auto-deploy
+- **AWS/GCP** : Via container registry
+
+## 🔧 Scripts NPM
 
 | Commande | Description |
 |----------|-------------|
-| `npm run docker:build` | Construire l'image Docker |
+| `npm run docker:build` | Build l'image |
 | `npm run docker:run` | Démarrer avec docker-compose |
-| `npm run docker:logs` | Voir les logs en temps réel |
+| `npm run docker:logs` | Voir les logs |
 | `npm run docker:stop` | Arrêter le container |
-
-## 🚢 Déploiement sur serveur distant
-
-### Via SSH
-
-```bash
-# 1. Copier les fichiers sur le serveur
-scp -r .env config.json docker-compose.yml index.js package*.json user@server:/path/
-
-# 2. Se connecter au serveur
-ssh user@server
-
-# 3. Sur le serveur
-cd /path/
-docker-compose up -d
-docker-compose logs -f
-```
-
-### Build multi-plateforme
-
-Si votre serveur a une architecture différente (ex: serveur AMD64, dev sur Mac M1) :
-
-```bash
-# Build pour linux/amd64
-docker build --platform=linux/amd64 -t discord-bump-selfbot .
-
-# Push vers un registry (optionnel)
-docker tag discord-bump-selfbot myregistry.com/discord-bump-selfbot
-docker push myregistry.com/discord-bump-selfbot
-```
-
-## ✅ Avantages de Docker
-
-- 🔒 **Isolation** : Environnement isolé du système hôte
-- 🔄 **Redémarrage automatique** : `restart: unless-stopped` relance le bot en cas de crash
-- 📦 **Portable** : Fonctionne identiquement partout (dev, serveur, cloud)
-- 🛡️ **Sécurité** : User non-root, variables d'environnement sécurisées
-- 📊 **Logs gérés** : Rotation automatique, pas de disque plein
-- ⚡ **Rapide** : Image Alpine légère (~150MB)
 
 ## 🐛 Dépannage
 
 ### Le container ne démarre pas
 
 ```bash
-# Voir les logs d'erreur
+# Voir les logs
 docker-compose logs
 
 # Vérifier l'état
-docker-compose ps
+docker ps -a
 ```
 
 ### Erreur "config.json not found"
 
-Assurez-vous que `config.json` existe dans le même répertoire que `docker-compose.yml`.
+Le fichier `config.json` doit exister AVANT le build Docker. Créez-le dans votre dossier local.
 
 ### Le bot ne se connecte pas
 
 ```bash
-# Vérifier que .env contient USER_TOKEN
+# Vérifier .env
 cat .env
 
-# Voir les logs pour l'erreur exacte
-docker-compose logs
+# Vérifier les logs
+docker logs discord-bump-selfbot
 ```
-
-### Rebuild après modification de dépendances
-
-```bash
-# Force rebuild
-docker-compose build --no-cache
-docker-compose up -d
-```
-
-
-### Docker Hub
-
-```bash
-# Login
-docker login
-
-# Tag et push
-docker tag discord-bump-selfbot username/discord-bump-selfbot:latest
-docker push username/discord-bump-selfbot:latest
-```
-
-### Autres services supportés
-
-- **DigitalOcean App Platform** : Push vers GitHub, configurer variables env et volumes
-- **Heroku** : Via `heroku.yml` (container stack) + config vars
-- **AWS ECS/Fargate** : Via AWS CLI ou Console + task definition avec volumes
-- **Google Cloud Run** : Nécessite montage de secrets pour config.json
 
 ## 📚 Ressources
 
-- [Documentation Docker](https://docs.docker.com/)
-- [Guide Node.js + Docker](https://docs.docker.com/language/nodejs/)
-- [Docker Compose référence](https://docs.docker.com/compose/compose-file/)
-- [Best practices Dockerfile](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
-
-## 💡 Tips
-
-- Utilisez `.dockerignore` pour exclure les fichiers inutiles du build
-- Montez `config.json` en read-only (`:ro`) pour éviter les modifications accidentelles
-- Configurez les logs avec rotation pour éviter de remplir le disque
-- Utilisez `--no-cache` si vous rencontrez des problèmes de cache lors du build
+- [Docker Docs](https://docs.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- [Dokploy](https://dokploy.com/)
 
 ---
 
-**Besoin d'aide ?** Consultez le [README principal](README.md) ou ouvrez une issue sur GitHub.
+**Besoin d'aide ?** Consultez le [README principal](README.md)
