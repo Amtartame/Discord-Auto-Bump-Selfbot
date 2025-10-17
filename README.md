@@ -229,64 +229,39 @@ Appuyez sur `Ctrl+C` dans le terminal pour arrêter proprement le bot.
 
 ## 🐳 Utilisation avec Docker (optionnel)
 
-Si vous préférez utiliser Docker pour un déploiement isolé et facile :
+Pour un déploiement isolé, portable et avec redémarrage automatique :
 
-### Prérequis Docker
-- Docker installé sur votre système
-- Docker Compose (optionnel mais recommandé)
+### Démarrage rapide
 
-### Méthode 1 : Avec Docker Compose (recommandé)
+```bash
+# Démarrer avec docker-compose
+npm run docker:run
 
-1. **Assurez-vous que `.env` et `config.json` sont configurés**
+# Voir les logs
+npm run docker:logs
 
-2. **Démarrez le container**
-   ```bash
-   docker-compose up -d
-   ```
+# Arrêter
+npm run docker:stop
+```
 
-3. **Voir les logs**
-   ```bash
-   docker-compose logs -f
-   ```
+### Scripts NPM disponibles
 
-4. **Arrêter le container**
-   ```bash
-   docker-compose down
-   ```
+| Commande | Description |
+|----------|-------------|
+| `npm run docker:build` | Construire l'image Docker |
+| `npm run docker:run` | Démarrer avec docker-compose en arrière-plan |
+| `npm run docker:logs` | Voir les logs en temps réel |
+| `npm run docker:stop` | Arrêter le container |
 
-### Méthode 2 : Avec Docker directement
+### Documentation complète
 
-1. **Construire l'image**
-   ```bash
-   docker build -t discord-bump-selfbot .
-   ```
-
-2. **Démarrer le container**
-   ```bash
-   docker run -d \
-     --name discord-bump-selfbot \
-     --env-file .env \
-     -v $(pwd)/config.json:/app/config.json:ro \
-     --restart unless-stopped \
-     discord-bump-selfbot
-   ```
-
-3. **Voir les logs**
-   ```bash
-   docker logs -f discord-bump-selfbot
-   ```
-
-4. **Arrêter le container**
-   ```bash
-   docker stop discord-bump-selfbot
-   docker rm discord-bump-selfbot
-   ```
-
-### Avantages de Docker
-- ✅ Environnement isolé et reproductible
-- ✅ Redémarrage automatique en cas de crash
-- ✅ Facile à déployer sur un serveur
-- ✅ Gestion des logs simplifiée
+📖 **Consultez [README.Docker.md](README.Docker.md) pour :**
+- Guide d'installation Docker détaillé
+- Configuration avancée (docker-compose.yml, Dockerfile)
+- Déploiement sur serveur distant
+- Déploiement cloud (Railway, Fly.io, AWS, etc.)
+- Dépannage et tips
+- Gestion des logs et monitoring
 
 ## 💡 Conseils et bonnes pratiques
 
