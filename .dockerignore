@@ -1,0 +1,54 @@
+# Discord Auto-Bump Selfbot - .dockerignore
+# Fichiers à exclure du contexte Docker pour optimiser le build
+
+# Git
+.git
+.gitignore
+
+# Dependencies (installées dans le Dockerfile)
+node_modules/
+
+# Environment variables (doivent être passées au runtime)
+.env
+.env.*
+!.env.example
+
+# Configuration (doit être montée via volume)
+# Commentez cette ligne si vous voulez inclure config.json dans l'image
+# config.json
+
+# Documentation
+README.md
+LICENSE
+*.md
+
+# IDE et éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Exemples (ne pas inclure dans l'image)
+*.example.*
+config.example.json
+.env.example
+
+# Autres
+.npm
+.eslintcache

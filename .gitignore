@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Environment variables (contient le token utilisateur)
+.env
+
+# Configuration personnelle (peut contenir des IDs sensibles)
+config.json
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache

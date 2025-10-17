@@ -1,0 +1,55 @@
+{
+  "bots": [
+    {
+      "botId": "302050872383242240",
+      "botName": "Disboard",
+      "commands": [
+        {
+          "name": "Bump Server Principal",
+          "channelId": "123456789012345678",
+          "command": "bump",
+          "intervalMinutes": 120,
+          "randomVariationPercent": 15,
+          "description": "Bump toutes les 2h avec variation de ±15% (102-138 min)"
+        },
+        {
+          "name": "Bump Server Secondaire",
+          "channelId": "987654321098765432",
+          "command": "bump",
+          "intervalMinutes": 150,
+          "randomVariationPercent": 20,
+          "description": "Bump toutes les 2h30 avec variation de ±20% (120-180 min)"
+        }
+      ]
+    },
+    {
+      "botId": "366281166990032896",
+      "botName": "ServerHub",
+      "commands": [
+        {
+          "name": "Bump ServerHub",
+          "channelId": "111111111111111111",
+          "command": "bump",
+          "intervalMinutes": 180,
+          "randomVariationPercent": 15,
+          "description": "Bump ServerHub toutes les 3h avec variation de ±15%"
+        }
+      ]
+    },
+    {
+      "botId": "AUTRE_BOT_ID",
+      "botName": "Autre Bot",
+      "commands": [
+        {
+          "name": "Commande personnalisée",
+          "channelId": "555555555555555555",
+          "command": "autre_commande",
+          "intervalMinutes": 60,
+          "randomVariationPercent": 10,
+          "description": "Commande personnalisée toutes les 1h avec variation de ±10%"
+        }
+      ]
+    }
+  ],
+  "_comment": "Structure optimisée : les commandes sont groupées par bot. Vous pouvez configurer autant de bots et de commandes que vous voulez."
+}

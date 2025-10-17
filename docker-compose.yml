@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  discord-bump-selfbot:
+    build: .
+    container_name: discord-bump-selfbot
+    restart: unless-stopped
+
+    # Mount .env file for the user token
+    env_file:
+      - .env
+
+    # Mount config.json as a volume (permet de modifier sans rebuild)
+    volumes:
+      - ./config.json:/app/config.json:ro
+
+    # Optional: Set timezone
+    environment:
+      - TZ=Europe/Paris
+
+    # Logs
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
