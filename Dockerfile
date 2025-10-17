@@ -19,7 +19,9 @@ RUN npm ci --omit=dev && \
 
 # Copy application files
 COPY index.js ./
-COPY config.json ./
+
+# Note: config.json should be mounted as a volume at runtime
+# Example: docker run -v ./config.json:/app/config.json:ro ...
 
 # Run as non-root user for security
 USER node

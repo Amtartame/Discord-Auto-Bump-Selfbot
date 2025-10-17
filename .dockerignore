@@ -13,9 +13,8 @@ node_modules/
 .env.*
 !.env.example
 
-# Configuration (doit être montée via volume)
-# Commentez cette ligne si vous voulez inclure config.json dans l'image
-# config.json
+# Configuration (doit être montée via volume, jamais dans l'image)
+config.json
 
 # Documentation
 README.md
